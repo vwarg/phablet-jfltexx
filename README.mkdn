@@ -22,3 +22,9 @@ Then to sync up:
     repo sync
 
 Please see the (http://wiki.ubuntu.com/) for building instructions.
+
+In case of errors
+-----------------
+Try:
+    adb push phablet-jfltexx/70-jfltexx.rules /usr/lib/lxc-android-config/70-jfltexx.rules
+    adb reboot
