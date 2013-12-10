@@ -15,7 +15,7 @@ familiar with [Git and Repo](http://source.android.com/download/using-repo).
 
 To initialize your local repository using the Ubuntu Phablet trees, use a command like this:
 
-    repo init -u git://phablet.ubuntu.com/CyanogenMod/android.git -b phablet-saucy
+    repo init -u git://github.com/vwarg/phablet-jfltexx.git -b master
 
 Then to sync up:
 
