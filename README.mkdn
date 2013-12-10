@@ -1,0 +1,24 @@
+Ubuntu Phablet (Android Part)
+=============================
+
+Submitting Patches
+------------------
+Patches are always welcome!  Please submit your patches via the Ubuntu Phone mailing list (ubuntu-phone@lists.launchpad.net).
+
+You can find more information about the mailing list and the Launchpad ubuntu-phone team at https://launchpad.net/~ubuntu-phone.
+
+Getting Started
+---------------
+
+To get started with Ubuntu Phablet Android build, you'll need to get
+familiar with [Git and Repo](http://source.android.com/download/using-repo).
+
+To initialize your local repository using the Ubuntu Phablet trees, use a command like this:
+
+    repo init -u git://phablet.ubuntu.com/CyanogenMod/android.git -b phablet-saucy
+
+Then to sync up:
+
+    repo sync
+
+Please see the (http://wiki.ubuntu.com/) for building instructions.
