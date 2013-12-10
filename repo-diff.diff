@@ -1,0 +1,558 @@
+
+project device/samsung/jf-common/
+diff --git a/BoardConfigCommon.mk b/BoardConfigCommon.mk
+index e416a74..fd9c98b 100644
+--- a/BoardConfigCommon.mk
++++ b/BoardConfigCommon.mk
+@@ -87,4 +87,4 @@ BOARD_USES_SEPERATED_VOIP := true
+ 
+ # Use seperate devices for 3-pole headset
+ BOARD_USES_SEPERATED_HEADSET_MIC := true
+-
++QCOM_ENHANCED_AUDIO	:= true
+diff --git a/jf-common.mk b/jf-common.mk
+index 589d063..76c8cff 100644
+--- a/jf-common.mk
++++ b/jf-common.mk
+@@ -75,7 +75,7 @@ PRODUCT_PACKAGES += \
+     ueventd.qcom.rc
+ 
+ # Torch
+-PRODUCT_PACKAGES += Torch
++#PRODUCT_PACKAGES += Torch
+ 
+ # Vold configuration
+ PRODUCT_COPY_FILES += \
+@@ -90,10 +90,10 @@ PRODUCT_PACKAGES += \
+ PRODUCT_PACKAGES += \
+     libnfc-nci \
+     libnfc_nci_jni \
+-    nfc_nci.msm8960 \
+-    NfcNci \
+-    Tag \
+-    com.android.nfc_extras
++    nfc_nci.msm8960 
++#    NfcNci \
++#    Tag \
++#    com.android.nfc_extras
+ 
+ # NFCEE access control + configuration
+ NFCEE_ACCESS_PATH := device/samsung/jf-common/nfc/nfcee_access.xml
+
+project device/samsung/jfltexx/
+diff --git a/BoardConfig.mk b/BoardConfig.mk
+index b65b4e6..543f61a 100644
+--- a/BoardConfig.mk
++++ b/BoardConfig.mk
+@@ -31,3 +31,4 @@ TARGET_OTA_ASSERT_DEVICE := jflte,jfltexx,i9505,GT-I9505,jgedlte,i9505g,GT-I9505
+ 
+ # Kernel
+ TARGET_KERNEL_CONFIG         := jf_eur_defconfig
++BOARD_USES_QCOM_HARDWARE := true
+diff --git a/cm.mk b/cm.mk
+index a62807b..cd0176e 100644
+--- a/cm.mk
++++ b/cm.mk
+@@ -11,6 +11,7 @@ $(call inherit-product, vendor/cm/config/common_full_phone.mk)
+ 
+ PRODUCT_BUILD_PROP_OVERRIDES += PRODUCT_NAME=jfltexx TARGET_DEVICE=jfltexx BUILD_FINGERPRINT="samsung/jfltexx/jflte:4.2.2/JDQ39/I9505XXUAMDE:user/release-keys" PRIVATE_BUILD_DESC="jfltexx-user 4.2.2 JDQ39 I9505XXUAMDE release-keys"
+ 
++
+ PRODUCT_DEVICE := jfltexx
+ PRODUCT_NAME := cm_jfltexx
+ 
+diff --git a/full_jfltexx.mk b/full_jfltexx.mk
+index 2d3a644..c89b4e6 100644
+--- a/full_jfltexx.mk
++++ b/full_jfltexx.mk
+@@ -27,6 +27,10 @@ $(call inherit-product, $(SRC_TARGET_DIR)/product/full_base_telephony.mk)
+ # Inherit from jfltetmo device
+ $(call inherit-product, device/samsung/jfltexx/device.mk)
+ 
++PRODUCT_COPY_FILES += device/samsung/jfltexx/ubuntu/70-jfltexx.rules:/usr/lib/lxc-android-config/70-jfltexx.rules
++PRODUCT_COPY_FILES += device/samsung/jfltexx/ubuntu/init.rc:/init.rc
++
++
+ # Set those variables here to overwrite the inherited values.
+ PRODUCT_NAME := full_jfltexx
+ PRODUCT_DEVICE := jfltexx
+
+project device/samsung/msm8960-common/
+diff --git a/msm8960.mk b/msm8960.mk
+index a9c9f37..64ab42a 100644
+--- a/msm8960.mk
++++ b/msm8960.mk
+@@ -30,7 +30,7 @@ PRODUCT_COPY_FILES += \
+     frameworks/native/data/etc/android.software.sip.voip.xml:system/etc/permissions/android.software.sip.voip.xml \
+     frameworks/native/data/etc/android.hardware.sensor.accelerometer.xml:system/etc/permissions/android.hardware.sensor.accelerometer.xml \
+     frameworks/native/data/etc/android.hardware.sensor.compass.xml:system/etc/permissions/android.hardware.sensor.compass.xml \
+-    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
++#    frameworks/base/nfc-extras/com.android.nfc_extras.xml:system/etc/permissions/com.android.nfc_extras.xml \
+     frameworks/native/data/etc/android.hardware.nfc.xml:system/etc/permissions/android.hardware.nfc.xml \
+     frameworks/native/data/etc/com.nxp.mifare.xml:system/etc/permissions/com.nxp.mifare.xml \
+     frameworks/native/data/etc/android.hardware.telephony.gsm.xml:system/etc/permissions/android.hardware.telephony.gsm.xml \
+@@ -55,20 +55,20 @@ PRODUCT_PACKAGES += \
+     power.msm8960
+ 
+ # GalaxyS3Settings
+-PRODUCT_PACKAGES += \
+-     GalaxyS3Settings \
+-     SamsungServiceMode
++#PRODUCT_PACKAGES += \
++#     GalaxyS3Settings \
++#     SamsungServiceMode
+ 
+ # Misc
+-PRODUCT_PACKAGES += \
+-    com.android.future.usb.accessory
++#PRODUCT_PACKAGES += \
++#    com.android.future.usb.accessory#
+ 
+ # Live Wallpapers
+-PRODUCT_PACKAGES += \
+-    LiveWallpapers \
+-    LiveWallpapersPicker \
+-    VisualizationWallpapers \
+-    librs_jni
++#PRODUCT_PACKAGES += \
++#    LiveWallpapers \
++#    LiveWallpapersPicker \
++#    VisualizationWallpapers \
++#    librs_jni
+ 
+ # keylayouts
+ PRODUCT_COPY_FILES += \
+
+project frameworks/av/
+diff --git a/media/libmediaplayerservice/StagefrightRecorder.cpp b/media/libmediaplayerservice/StagefrightRecorder.cpp
+index 4d25277..018db48 100644
+--- a/media/libmediaplayerservice/StagefrightRecorder.cpp
++++ b/media/libmediaplayerservice/StagefrightRecorder.cpp
+@@ -56,7 +56,6 @@
+ #ifdef QCOM_HARDWARE
+ #include <media/stagefright/ExtendedWriter.h>
+ #include <media/stagefright/WAVEWriter.h>
+-#include <QCMediaDefs.h>
+ #include <cutils/properties.h>
+ #include <QCUtilityClass.h>
+ #endif
+diff --git a/media/libstagefright/ACodec.cpp b/media/libstagefright/ACodec.cpp
+index a9e344d..5fa7bf0 100644
+--- a/media/libstagefright/ACodec.cpp
++++ b/media/libstagefright/ACodec.cpp
+@@ -20,7 +20,6 @@
+ #include <media/stagefright/ACodec.h>
+ 
+ #include <binder/MemoryDealer.h>
+-
+ #include <media/stagefright/foundation/hexdump.h>
+ #include <media/stagefright/foundation/ABuffer.h>
+ #include <media/stagefright/foundation/ADebug.h>
+@@ -34,13 +33,13 @@
+ 
+ #include <media/stagefright/MetaData.h>
+ 
+-#ifdef QCOM_ENHANCED_AUDIO
+-#include <QCMediaDefs.h>
+-#include <QCMetaData.h>
+-#include <QOMX_AudioExtensions.h>
+-#include <OMX_QCOMExtns.h>
++//#ifdef QCOM_ENHANCED_AUDIO
++#include <qcom/media/mm-core/inc/QCMediaDefs.h>
++#include <qcom/media/mm-core/inc/QCMetaData.h>
++#include <qcom/media/mm-core/inc/QOMX_AudioExtensions.h>
++#include <qcom/media/mm-core/inc/OMX_QCOMExtns.h>
+ #include "include/QCUtilityClass.h"
+-#endif
++//#endif
+ 
+ #include <media/hardware/HardwareAPI.h>
+ 
+diff --git a/media/libstagefright/Android.mk b/media/libstagefright/Android.mk
+index 1483315..189fa70 100755
+--- a/media/libstagefright/Android.mk
++++ b/media/libstagefright/Android.mk
+@@ -3,6 +3,7 @@ include $(CLEAR_VARS)
+ 
+ include frameworks/av/media/libstagefright/codecs/common/Config.mk
+ 
++
+ ifeq ($(BOARD_HTC_3D_SUPPORT),true)
+    LOCAL_CFLAGS += -DHTC_3D_SUPPORT
+ endif
+@@ -73,6 +74,9 @@ LOCAL_C_INCLUDES:= \
+         $(TOP)/external/tremolo \
+         $(TOP)/external/openssl/include
+ 
++LOCAL_C_INCLUDES += \
++        $(TOP)/frameworks/av/include
++
+ ifneq ($(TI_CUSTOM_DOMX_PATH),)
+ LOCAL_C_INCLUDES += $(TI_CUSTOM_DOMX_PATH)/omx_core/inc
+ LOCAL_CPPFLAGS += -DUSE_TI_CUSTOM_DOMX
+diff --git a/media/libstagefright/CameraSource.cpp b/media/libstagefright/CameraSource.cpp
+index f7d452b..a413635 100755
+--- a/media/libstagefright/CameraSource.cpp
++++ b/media/libstagefright/CameraSource.cpp
+@@ -32,7 +32,7 @@
+ #include <cutils/properties.h>
+ #ifdef QCOM_HARDWARE
+ #include "include/QCUtilityClass.h"
+-#include <QCMetaData.h>
++//#include <QCMetaData.h>
+ #endif
+ #ifdef USE_TI_CUSTOM_DOMX
+ #include <OMX_TI_IVCommon.h>
+diff --git a/media/libstagefright/ExtendedWriter.cpp b/media/libstagefright/ExtendedWriter.cpp
+index 7c8b08e..292933f 100644
+--- a/media/libstagefright/ExtendedWriter.cpp
++++ b/media/libstagefright/ExtendedWriter.cpp
+@@ -29,7 +29,7 @@
+ #include <sys/resource.h>
+ 
+ #include <arpa/inet.h>
+-#include <QCMediaDefs.h>
++#include "include/QCUtilityClass.h"
+ 
+ #undef LOG_TAG
+ #define LOG_TAG "ExtendedWriter"
+diff --git a/media/libstagefright/MPEG4Extractor.cpp b/media/libstagefright/MPEG4Extractor.cpp
+index dd1e60b..fa2986d 100644
+--- a/media/libstagefright/MPEG4Extractor.cpp
++++ b/media/libstagefright/MPEG4Extractor.cpp
+@@ -41,8 +41,7 @@
+ #include <media/stagefright/Utils.h>
+ #include <utils/String8.h>
+ #ifdef QCOM_HARDWARE
+-#include <QCMediaDefs.h>
+-#include <QCMetaData.h>
++#include "include/QCUtilityClass.h"
+ #endif
+ 
+ namespace android {
+diff --git a/media/libstagefright/OMXCodec.cpp b/media/libstagefright/OMXCodec.cpp
+index 91ba093..85282b5 100644
+--- a/media/libstagefright/OMXCodec.cpp
++++ b/media/libstagefright/OMXCodec.cpp
+@@ -48,10 +48,6 @@
+ #include <OMX_Component.h>
+ 
+ #ifdef QCOM_HARDWARE
+-#include <QCMediaDefs.h>
+-#include <QCMetaData.h>
+-#include <QOMX_AudioExtensions.h>
+-#include <OMX_QCOMExtns.h>
+ #include "include/QCUtilityClass.h"
+ #endif
+ 
+diff --git a/media/libstagefright/QCMediaDefs.cpp b/media/libstagefright/QCMediaDefs.cpp
+index 5e8b84f..d6ae6a5 100644
+--- a/media/libstagefright/QCMediaDefs.cpp
++++ b/media/libstagefright/QCMediaDefs.cpp
+@@ -26,7 +26,7 @@
+  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  */
+ 
+-#include <QCMediaDefs.h>
++#include "include/QCUtilityClass.h"
+ 
+ namespace android {
+ 
+diff --git a/media/libstagefright/QCOMXCodec.cpp b/media/libstagefright/QCOMXCodec.cpp
+index a2f3b35..7324b2e 100644
+--- a/media/libstagefright/QCOMXCodec.cpp
++++ b/media/libstagefright/QCOMXCodec.cpp
+@@ -39,12 +39,8 @@
+ #include <media/stagefright/MetaData.h>
+ #include <media/stagefright/QCOMXCodec.h>
+ #include <media/stagefright/OMXCodec.h>
+-#include <QCMetaData.h>
+-#include <QCMediaDefs.h>
+-#include <OMX_QCOMExtns.h>
+ 
+-#include <OMX_Component.h>
+-#include <QOMX_AudioExtensions.h>
++#include "include/QCUtilityClass.h"
+ 
+ #include "include/avc_utils.h"
+ 
+diff --git a/media/libstagefright/Utils.cpp b/media/libstagefright/Utils.cpp
+index 7bd2032..e54c895 100644
+--- a/media/libstagefright/Utils.cpp
++++ b/media/libstagefright/Utils.cpp
+@@ -29,11 +29,6 @@
+ #include <media/stagefright/Utils.h>
+ 
+ #ifdef QCOM_ENHANCED_AUDIO
+-#include <QCMediaDefs.h>
+-#include <QCMetaData.h>
+-#include <QOMX_AudioExtensions.h>
+-#include <OMX_QCOMExtns.h>
+-#include "include/avc_utils.h"
+ 
+ #include "include/QCUtilityClass.h"
+ #endif
+diff --git a/media/libstagefright/include/QCUtilityClass.h b/media/libstagefright/include/QCUtilityClass.h
+index 91b184f..e27b978 100644
+--- a/media/libstagefright/include/QCUtilityClass.h
++++ b/media/libstagefright/include/QCUtilityClass.h
+@@ -29,9 +29,16 @@
+ #ifndef QC_UTIL_CLASS_H_
+ #define QC_UTIL_CLASS_H_
+ 
+-#include <QCMetaData.h>
++#include <qcom/media/mm-core/inc/QCMediaDefs.h>
++#include <qcom/media/mm-core/inc/QCMetaData.h>
++#include <qcom/media/mm-core/inc/QOMX_AudioExtensions.h>
++#include <qcom/media/mm-core/inc/OMX_QCOMExtns.h>
++
++#include <OMX_Component.h>
++//#include "include/avc_utils.h"
++#include <qcom/media/mm-core/inc/QCMetaData.h>
+ #include <cutils/properties.h>
+-#include <QCMediaDefs.h>
++#include <qcom/media/mm-core/inc/QCMediaDefs.h>
+ 
+ #include <media/Metadata.h>
+ #include <media/stagefright/MediaSource.h>
+@@ -47,7 +54,7 @@
+ #include <media/MediaRecorderBase.h>
+ #include <camera/CameraParameters.h>
+ 
+-#include <OMX_Video.h>
++#include <qcom/media/mm-core/inc/OMX_Video.h>
+ #include <media/stagefright/MediaExtractor.h>
+ #include <media/stagefright/MetaData.h>
+ #include <media/stagefright/MediaDebug.h>
+
+project hardware/qcom/audio-caf/
+diff --git a/mm-audio/adec-aac/sw/Android.mk b/mm-audio/adec-aac/sw/Android.mk
+index 12a91b1..987fb05 100755
+--- a/mm-audio/adec-aac/sw/Android.mk
++++ b/mm-audio/adec-aac/sw/Android.mk
+@@ -39,6 +39,8 @@ LOCAL_MODULE            := sw-adec-omxaac-test
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxAacDec-def)
+ LOCAL_C_INCLUDES        := $(mm-aac-dec-test-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libopencore_common
+ LOCAL_SHARED_LIBRARIES  += libomx_sharedlibrary
+diff --git a/mm-audio/adec-amr/sw/Android.mk b/mm-audio/adec-amr/sw/Android.mk
+index ffa9789..e940d4f 100755
+--- a/mm-audio/adec-amr/sw/Android.mk
++++ b/mm-audio/adec-amr/sw/Android.mk
+@@ -40,6 +40,8 @@ LOCAL_MODULE            := sw-adec-omxamr-test
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxAmrDec-def)
+ LOCAL_C_INCLUDES        := $(mm-amr-dec-test-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libopencore_common
+ LOCAL_SHARED_LIBRARIES  += libomx_sharedlibrary
+diff --git a/mm-audio/adec-amrwb/sw/Android.mk b/mm-audio/adec-amrwb/sw/Android.mk
+index 5de1d9d..11578d9 100755
+--- a/mm-audio/adec-amrwb/sw/Android.mk
++++ b/mm-audio/adec-amrwb/sw/Android.mk
+@@ -40,6 +40,8 @@ LOCAL_MODULE            := sw-adec-omxamrwb-test
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxAmrDec-def)
+ LOCAL_C_INCLUDES        := $(mm-amr-dec-test-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libopencore_common
+ LOCAL_SHARED_LIBRARIES  += libomx_sharedlibrary
+diff --git a/mm-audio/adec-mp3/sw/Android.mk b/mm-audio/adec-mp3/sw/Android.mk
+index 3773a88..37838e1 100755
+--- a/mm-audio/adec-mp3/sw/Android.mk
++++ b/mm-audio/adec-mp3/sw/Android.mk
+@@ -40,6 +40,8 @@ LOCAL_MODULE            := sw-adec-omxmp3-test
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxMp3Dec-def)
+ LOCAL_C_INCLUDES        := $(mm-mp3-dec-test-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libopencore_common
+ LOCAL_SHARED_LIBRARIES  += libomx_sharedlibrary
+diff --git a/mm-audio/aenc-aac/qdsp6/Android.mk b/mm-audio/aenc-aac/qdsp6/Android.mk
+index e339f5d..9c08c14 100755
+--- a/mm-audio/aenc-aac/qdsp6/Android.mk
++++ b/mm-audio/aenc-aac/qdsp6/Android.mk
+@@ -30,6 +30,8 @@ LOCAL_MODULE            := libOmxAacEnc
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxAacEnc-def)
+ LOCAL_C_INCLUDES        := $(libOmxAacEnc-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libutils liblog
+ 
+diff --git a/mm-audio/aenc-amrnb/qdsp6/Android.mk b/mm-audio/aenc-amrnb/qdsp6/Android.mk
+index b97e2e5..287ecdf 100755
+--- a/mm-audio/aenc-amrnb/qdsp6/Android.mk
++++ b/mm-audio/aenc-amrnb/qdsp6/Android.mk
+@@ -30,6 +30,8 @@ LOCAL_MODULE            := libOmxAmrEnc
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxAmrEnc-def)
+ LOCAL_C_INCLUDES        := $(libOmxAmrEnc-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libutils liblog
+ 
+diff --git a/mm-audio/aenc-evrc/qdsp6/Android.mk b/mm-audio/aenc-evrc/qdsp6/Android.mk
+index d38d004..f0f975f 100755
+--- a/mm-audio/aenc-evrc/qdsp6/Android.mk
++++ b/mm-audio/aenc-evrc/qdsp6/Android.mk
+@@ -30,6 +30,8 @@ LOCAL_MODULE            := libOmxEvrcEnc
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxEvrcEnc-def)
+ LOCAL_C_INCLUDES        := $(libOmxEvrcEnc-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libutils liblog
+ 
+diff --git a/mm-audio/aenc-qcelp13/qdsp6/Android.mk b/mm-audio/aenc-qcelp13/qdsp6/Android.mk
+index 5aaa3bf..0cfc2e9 100755
+--- a/mm-audio/aenc-qcelp13/qdsp6/Android.mk
++++ b/mm-audio/aenc-qcelp13/qdsp6/Android.mk
+@@ -30,6 +30,8 @@ LOCAL_MODULE            := libOmxQcelp13Enc
+ LOCAL_MODULE_TAGS       := optional
+ LOCAL_CFLAGS            := $(libOmxQcelp13Enc-def)
+ LOCAL_C_INCLUDES        := $(libOmxQcelp13Enc-inc)
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/inc
++LOCAL_C_INCLUDES	+= $(TOP)/hardware/qcom/media/mm-core/omxcore/inc
+ LOCAL_PRELINK_MODULE    := false
+ LOCAL_SHARED_LIBRARIES  := libutils liblog
+ 
+
+project hardware/qcom/media/
+diff --git a/mm-core/inc/QOMX_AudioExtensions.h b/mm-core/inc/QOMX_AudioExtensions.h
+index be7afd0..20e34d3 100644
+--- a/mm-core/inc/QOMX_AudioExtensions.h
++++ b/mm-core/inc/QOMX_AudioExtensions.h
+@@ -42,7 +42,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                      INCLUDE FILES FOR MODULE
+ 
+ ========================================================================== */
+-#include <OMX_Audio.h>
++#include "hardware/qcom/media/mm-core/omxcore/inc/OMX_Audio.h"
+ 
+ /*========================================================================
+ 
+
+project vendor/cm/
+diff --git a/config/common.mk b/config/common.mk
+index 4f1e9da..48d4288 100644
+--- a/config/common.mk
++++ b/config/common.mk
+@@ -135,33 +135,33 @@ include vendor/cm/config/themes_common.mk
+ 
+ # Required CM packages
+ PRODUCT_PACKAGES += \
+-    Camera \
+-    Development \
+-    LatinIME \
+-    Superuser \
+-    su
++#    Camera \
++#    Development \
++#    LatinIME \
++    Superuser 
++#    su
+ 
+ # Optional CM packages
+-PRODUCT_PACKAGES += \
+-    VideoEditor \
+-    VoiceDialer \
+-    SoundRecorder \
+-    Basic
++#PRODUCT_PACKAGES += \
++#    VideoEditor \
++#    VoiceDialer \
++#    SoundRecorder \
++#    Basic
+ 
+ # Custom CM packages
+-PRODUCT_PACKAGES += \
+-    Trebuchet \
+-    DSPManager \
+-    libcyanogen-dsp \
++#PRODUCT_PACKAGES += \
++#    Trebuchet \
++#    DSPManager \
++#    libcyanogen-dsp \
+     audio_effects.conf \
+-    CMWallpapers \
+-    Apollo \
+-    CMUpdater \
+-    CMFileManager \
+-    LockClock
+-
+-PRODUCT_PACKAGES += \
+-    CellBroadcastReceiver
++#    CMWallpapers \
++#    Apollo \
++#    CMUpdater \
++#    CMFileManager \
++#    LockClock
++
++#PRODUCT_PACKAGES += \
++#    CellBroadcastReceiver
+ 
+ # Extra tools in CM
+ PRODUCT_PACKAGES += \
+diff --git a/config/common_full.mk b/config/common_full.mk
+index 9e9abfe..926c0fa 100644
+--- a/config/common_full.mk
++++ b/config/common_full.mk
+@@ -4,12 +4,12 @@ $(call inherit-product, vendor/cm/config/common.mk)
+ include ubuntu/assets/UbuntuAssets.mk
+ 
+ # Optional CM packages
+-PRODUCT_PACKAGES += \
+-    HoloSpiralWallpaper \
+-    MagicSmokeWallpapers \
+-    NoiseField \
+-    Galaxy4 \
+-    LiveWallpapers \
+-    LiveWallpapersPicker \
+-    VisualizationWallpapers \
+-    PhaseBeam
++#PRODUCT_PACKAGES += \
++#    HoloSpiralWallpaper \
++#    MagicSmokeWallpapers \
++#    NoiseField \
++#    Galaxy4 \
++#    LiveWallpapers \
++#    LiveWallpapersPicker \
++#    VisualizationWallpapers \
++#    PhaseBeam
+diff --git a/config/common_full_phone.mk b/config/common_full_phone.mk
+index a1f974e..a8eba34 100644
+--- a/config/common_full_phone.mk
++++ b/config/common_full_phone.mk
+@@ -8,7 +8,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
+     ro.config.alarm_alert=Hassium.ogg
+ 
+ PRODUCT_PACKAGES += \
+-  Mms
++#  Mms
+ 
+ # BT config
+ PRODUCT_COPY_FILES += \
+diff --git a/config/nfc_enhanced.mk b/config/nfc_enhanced.mk
+index d9ea102..2297f4a 100644
+--- a/config/nfc_enhanced.mk
++++ b/config/nfc_enhanced.mk
+@@ -1,3 +1,3 @@
+ # This device supports CM enhanced NFC
+-PRODUCT_COPY_FILES += \
+-    vendor/cm/config/permissions/com.cyanogenmod.nfc.enhanced.xml:system/etc/permissions/com.cyanogenmod.nfc.enhanced.xml
++#PRODUCT_COPY_FILES += \
++#    vendor/cm/config/permissions/com.cyanogenmod.nfc.enhanced.xml:system/etc/permissions/com.cyanogenmod.nfc.enhanced.xml
